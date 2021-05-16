@@ -2,6 +2,7 @@
 !**/
 !*.*
 nimcache/
+.tmp/
 
 *.o
 !/icons/*.o

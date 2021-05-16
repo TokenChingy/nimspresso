@@ -22,6 +22,12 @@ proc startup(self: Application): Future[void] {.async.} =
     for _, path in resource.paths:
       self.routes[path] = resource
 
+proc parseBody(self: Application, ctx: Context): Future[void] {.async.} =
+  let contentType: string = ctx.request.headers["content-type"]
+  let tempBodyPath: string = ctx.request.body
+
+  echo(contentType)
+
 proc before(self: Application, ctx: Context): Future[void] {.async.} =
   if len(self.beforeResource) > 0:
     for _, middleware in self.beforeResource:
@@ -114,7 +120,7 @@ proc route(self: Application, ctx: Context): Future[void] {.async.} =
 
     await ctx.resp()
 
-method serve*(self: Application, port: uint16, hostname: string = "127.0.0.1", debug: bool = false): Future[void] {.async, base.} =
+proc serve*(self: Application, port: uint16, hostname: string = "127.0.0.1", debug: bool = false): Future[void] {.async.} =
   await self.startup()
   
   self.server = newZFBlast(
@@ -127,7 +133,8 @@ method serve*(self: Application, port: uint16, hostname: string = "127.0.0.1", d
     let ctx: Context = cast[Context](zfCtx)
 
     ctx.pathParams = initTable[string, string]()
-
+    
+    await self.parseBody(ctx)
     await self.before(ctx)
     await self.route(ctx)
     await self.after(ctx)
