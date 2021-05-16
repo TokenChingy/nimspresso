@@ -112,12 +112,7 @@ proc route(self: Application, ctx: Context): Future[void] {.async.} =
     ctx.response.httpCode = Http404
     ctx.response.body = $Http404
 
-  ctx.routed = true
-
-  await self.after(ctx)
-
-  if not isNil(ctx.send):
-    await ctx.send(ctx)
+    await ctx.resp()
 
 method serve*(self: Application, port: uint16, hostname: string = "127.0.0.1", debug: bool = false): Future[void] {.async, base.} =
   await self.startup()
@@ -131,9 +126,9 @@ method serve*(self: Application, port: uint16, hostname: string = "127.0.0.1", d
   self.server.serve(proc (zfCtx: HttpContext): Future[void] {.async.} =
     let ctx: Context = cast[Context](zfCtx)
 
-    ctx.routed = false
     ctx.pathParams = initTable[string, string]()
 
     await self.before(ctx)
     await self.route(ctx)
+    await self.after(ctx)
   )

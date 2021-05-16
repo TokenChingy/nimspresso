@@ -5,7 +5,7 @@ import ./resources/health
 
 let app = Application(
   beforeResource: @[loggerMiddleware],
-  afterResource: @[loggerMiddleware],
+  afterResource: @[],
   resources: @[Resource(healthResource)]
 )
 

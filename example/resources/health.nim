@@ -14,4 +14,6 @@ method GET*(self: HealthResourece, ctx: Context): Future[void] {.async.} =
     }
   ])
 
+  await ctx.resp()
+
 let healthResource* = HealthResourece(paths: @["/api/health"])
