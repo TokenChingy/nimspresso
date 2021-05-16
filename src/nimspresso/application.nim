@@ -1,3 +1,4 @@
+import asyncfile
 import tables
 import times
 
@@ -23,10 +24,25 @@ proc startup(self: Application): Future[void] {.async.} =
       self.routes[path] = resource
 
 proc parseBody(self: Application, ctx: Context): Future[void] {.async.} =
-  let contentType: string = ctx.request.headers["content-type"]
-  let tempBodyPath: string = ctx.request.body
+  if ctx.request.headers.hasKey("content-type"):
+    let contentType: string = ctx.request.headers["content-type"]
+    let bodyFile: AsyncFile = openAsync(ctx.request.body)
+    let bodyString: string = await readAll(bodyFile)
 
-  echo(contentType)
+    close(bodyFile)
+
+    echo(contentType)
+
+    if contentType.contains("form-data"):
+      echo("form-data")
+    else:
+      case contentType:
+      of "x-www-form-urlencoded":
+        echo("application/x-www-form-urlencoded")
+      of "application/json":
+        echo("application/json")
+
+    # echo(bodyString)
 
 proc before(self: Application, ctx: Context): Future[void] {.async.} =
   if len(self.beforeResource) > 0:
