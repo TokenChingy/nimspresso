@@ -2,6 +2,7 @@ import asyncfile
 import tables
 import times
 
+import httpform
 import zfblast
 
 import context
@@ -31,14 +32,14 @@ proc parseBody(self: Application, ctx: Context): Future[void] {.async.} =
 
     close(bodyFile)
 
-    echo(contentType)
-
     if contentType.contains("form-data"):
       echo("form-data")
+      # let form = newAsyncHttpForm(getTempDir(), true)
+      # let (fields, files) = await form.parseAsync(contentType, bodyString)
     else:
       case contentType:
       of "x-www-form-urlencoded":
-        echo("application/x-www-form-urlencoded")
+        echo("x-www-form-urlencoded")
       of "application/json":
         echo("application/json")
 
