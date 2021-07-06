@@ -1,7 +1,9 @@
 import ../src/nimspresso
 
 import ./middlewares/logger
+
 import ./resources/health
+import ./resources/pathParams
 
 proc onExit() {.noconv.} =
   quit()
@@ -9,9 +11,9 @@ proc onExit() {.noconv.} =
 setControlCHook(onExit)
 
 let app = Application(
-  beforeResource: @[loggerMiddleware],
-  afterResource: @[],
-  resources: @[Resource(healthResource)]
+  beforeResource: @[],
+  afterResource: @[loggerMiddleware],
+  resources: @[Resource(healthResource), Resource(pathParamsResource)]
 )
 
 waitFor app.serve(
