@@ -5,6 +5,7 @@ author        = "Jason Zi Feng Lei"
 description   = "A minimal web framework."
 license       = "MIT"
 srcDir        = "src"
+bin           = @["nimspresso"]
 
 
 # Dependencies
