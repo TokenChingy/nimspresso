@@ -1,8 +1,8 @@
 # Package
 
-version       = "1.0.0"
+version       = "0.0.1"
 author        = "Jason Zi Feng Lei"
-description   = "A minimal web framework."
+description   = "A minimal web framework for Nim"
 license       = "MIT"
 srcDir        = "src"
 bin           = @["nimspresso"]
